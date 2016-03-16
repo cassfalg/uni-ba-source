@@ -101,7 +101,7 @@ unsigned int log2(std::size_t val) {
 #endif
 
 int main() {
-   std::cout << "  memsize  time in ns" << std::endl;
+   std::cout << "  memsize[byte] time in ns" << std::endl;
    for (std::size_t memsize = MIN_SIZE; memsize <= MAX_SIZE;
 	 memsize += (1 << (std::max(GRANULARITY, log2(memsize))-GRANULARITY))) {
       void** memory = create_random_chain(memsize);
@@ -109,8 +109,8 @@ int main() {
       double t = chase_pointers(memory, count);
       delete[] memory;
       double ns = t * 1000000000 / count;
-      std::cout << " " << std::setw(8) << memsize;
-      std::cout << "  " << std::setw(10) << std::setprecision(5) << ns;
+      std::cout << " " << std::setw(10) << memsize;
+      std::cout << "  " << std::fixed << std::setw(10) << std::setprecision(5) << ns;
       std::cout << std::endl; std::cout.flush();
    }
 }
