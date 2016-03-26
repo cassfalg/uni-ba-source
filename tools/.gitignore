@@ -1,0 +1,6 @@
+/random-chase
+/fused-linear-chase
+/linear-chase
+# Output from performance measurements
+/*.out
+
