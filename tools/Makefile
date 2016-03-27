@@ -1,5 +1,5 @@
 CPP = /usr/bin/g++
-CPPFLAGS = -Wall -Wextra -Wpedantic -std=c++11
+CPPFLAGS = -Wall -Wextra -Wpedantic -std=c++11 -O3
 
 PERF_TARGETS = linear-chase fused-linear-chase random-chase
 
@@ -15,3 +15,4 @@ clean:
 
 clean-perfdata:
 	rm -f $(PERF_TARGETS:%=%.*.out)
+
