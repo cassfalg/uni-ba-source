@@ -1,8 +1,11 @@
 CPP = /usr/bin/g++
-CPPFLAGS += -Wall -Wextra -Wpedantic -std=c++11 -O3 
+CPPFLAGS += -Wall -Wextra -Wpedantic -std=c++11 -O3 -I..
 
 
 PERF_TARGETS = test-blocksizes
+
+perf-blis:
+	g++  -Wall -Wextra -Wpedantic -std=c++11  -I/home/chris/workspace/bachelorarbeit/hpc-libs/blis/include/blis/ perf-blis.cpp   -o perf-blis temp/libblis.a -fopenmp
 
 test-blocksizes:
 	g++ $(CPPFLAGS) $(BLOCKDEFS) -o test-blocksizes test-blocksizes.cpp
