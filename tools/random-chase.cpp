@@ -23,26 +23,10 @@
 #include <iomanip>
 #include <iostream>
 #include <unistd.h>
-#include <sys/times.h>
+#include "utl_walltime.h"
 
 volatile void* global; // to defeat optimizations
 
-/* return real time in seconds since start of the process */
-double
-walltime ()
-{
-#ifndef CLK_TCK
-  /* CLK_TCK specifies the number of ticks per second */
-  static int CLK_TCK = 0;
-  if (!CLK_TCK)
-    {
-      CLK_TCK = sysconf (_SC_CLK_TCK);
-    }
-#endif
-  struct tms timebuf;
-  /* times returns the number of real time ticks passed since start */
-  return (double) times (&timebuf) / CLK_TCK;
-}
 
 /* create a cyclic pointer chain that covers all words
  in a memory section of the given size in a randomized order */

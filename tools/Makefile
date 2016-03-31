@@ -5,7 +5,8 @@ PERF_TARGETS = linear-chase fused-linear-chase random-chase
 
 .PHONY: clean clean-perfdata runperf
 
-ALL:
+
+ALL: runperf
 
 runperf: $(PERF_TARGETS)
 	for i in $(PERF_TARGETS); do ./$$i | tee $$i.$${HOSTNAME}.out; done
