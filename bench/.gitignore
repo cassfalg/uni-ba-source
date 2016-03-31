@@ -1,4 +1,3 @@
-/test-gemm
 /test-blocksizes
 # Output from performance measurements
 /*.out
