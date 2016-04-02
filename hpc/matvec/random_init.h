@@ -4,7 +4,6 @@
 #include <random>
 #include <complex>
 #include <hpc/matvec/gematrix.h>
-
 namespace hpc { namespace matvec {
 
 
@@ -18,7 +17,6 @@ namespace hpc { namespace matvec {
       std::random_device                  random;
       std::default_random_engine          mt(random());
       std::uniform_real_distribution<T>   uniform(-100,100);
-
       for (Index i=0; i<m; ++i) {
           for (Index j=0; j<n; ++j) {
               A[i*incRowA+j*incColA] = uniform(mt);
@@ -41,6 +39,11 @@ namespace hpc { namespace matvec {
       }
   }
 
+  template <typename Index, typename T>
+  void
+  randomInit(GeMatrix<Index, T> &A){
+    randomInit(A.numRows, A.numCols, A.data, A.incRow, A.incCol);
+  }
 
 } } // namespace matvec, hpc
 
