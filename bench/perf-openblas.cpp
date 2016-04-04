@@ -2,7 +2,7 @@
 #include <hpc/util/walltime.h>
 #include <hpc/matvec/gematrix.h>
 #include <hpc/matvec/random_init.h>
-#include <cblas.h>
+#include "openblas/cblas.h"
 
 #ifndef MIN_SIZE
 #define MIN_SIZE 200
@@ -42,7 +42,7 @@ int main() {
 		   const double *B, const int ldb,
 		   const double beta, double *C, const int ldc);*/
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans,
-		    i, i, i, alpha, &A(0,0), A.incCol,
+		    i, i, i, alpha, A.data, A.incCol,
 		    B.data, B.incCol,
 		    beta, C.data, C.incCol);
 	t = wallTime.toc();
