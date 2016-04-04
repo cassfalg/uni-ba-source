@@ -1,6 +1,7 @@
 /test-blocksizes
 /perf-openblas
 /perf-blis
+/perf-atlas
 # Output from performance measurements
 /*.out
 
