@@ -16,10 +16,25 @@ extern "C" {
 #define GRANULARITY 200u
 #endif
 
+//    1: single precision
+//    2: double precision
+#ifndef PRECISION
+#define PRECISION 2
+#endif
+
 int main() {
-//  openblas_set_num_threads(1);
+//  Atlas needs linking with multithreaded library for smp support
   using namespace hpc::matvec;
-  typedef double ElementType;
+#if PRECISION == 1
+    typedef float ElementType;
+    printf("%7s ", "m=n=k");
+    printf("%20s %9s\n", "ATLAS cblas_sgemm: t", "MFLOPS");
+#elif PRECISION == 2
+    typedef double ElementType;
+    printf("%7s ", "m=n=k");
+    printf("%20s %9s\n", "ATLAS cblas_dgemm: t", "MFLOPS");
+#endif
+
   typedef CBLAS_INDEX Index; //atlas uses int
   GeMatrix<ElementType, Index> A = GeMatrix<ElementType, Index>(MAX_SIZE, MAX_SIZE);
   GeMatrix<ElementType, Index> B = GeMatrix<ElementType, Index>(MAX_SIZE, MAX_SIZE);
@@ -30,8 +45,6 @@ int main() {
   ElementType alpha(1.5);
   ElementType beta(2.5);
 
-  printf("%7s ", "m=n=k");
-  printf("%20s %9s", "BLIS: t", "MFLOPS\n");
   hpc::util::WallTime<double> wallTime;
   double t;
   for (Index i=MIN_SIZE; i<=MAX_SIZE; i+=GRANULARITY) {
@@ -43,12 +56,12 @@ int main() {
 		   const double alpha, const double *A, const int lda,
 		   const double *B, const int ldb,
 		   const double beta, double *C, const int ldc);*/
-	/*void cblas_dgemm(const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
-                 const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
-                 const int K, const double alpha, const double *A,
-                 const int lda, const double *B, const int ldb,
-                 const double beta, double *C, const int ldc);*/
-	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans,
+    #if PRECISION == 1
+        cblas_sgemm(
+    #elif PRECISION == 2
+        cblas_dgemm(
+    #endif
+			CblasColMajor, CblasNoTrans, CblasNoTrans,
 		    i, i, i, alpha, A.data, A.incCol,
 		    B.data, B.incCol,
 		    beta, C.data, C.incCol);
