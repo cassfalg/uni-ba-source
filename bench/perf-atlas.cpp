@@ -28,11 +28,11 @@ int main() {
 #if PRECISION == 1
     typedef float ElementType;
     printf("%7s ", "m=n=k");
-    printf("%20s %9s\n", "ATLAS cblas_sgemm: t", "MFLOPS");
+    printf("%20s %9s\n", "ATLAS_cblas_sgemm:t", "MFLOPS");
 #elif PRECISION == 2
     typedef double ElementType;
     printf("%7s ", "m=n=k");
-    printf("%20s %9s\n", "ATLAS cblas_dgemm: t", "MFLOPS");
+    printf("%20s %9s\n", "ATLAS_cblas_dgemm:t", "MFLOPS");
 #endif
 
   typedef CBLAS_INDEX Index; //atlas uses int

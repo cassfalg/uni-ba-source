@@ -26,11 +26,11 @@ int main() {
 #if PRECISION == 1
     typedef float ElementType;
     printf("%7s ", "m=n=k");
-    printf("%20s %9s\n", "OpenBLAS cblas_sgemm: t", "MFLOPS");
+    printf("%20s %9s\n", "OpenBLAS_cblas_sgemm:t", "MFLOPS");
 #elif PRECISION == 2
     typedef double ElementType;
     printf("%7s ", "m=n=k");
-    printf("%20s %9s\n", "OpenBLAS cblas_dgemm: t", "MFLOPS");
+    printf("%20s %9s\n", "OpenBLAS_cblas_dgemm:t", "MFLOPS");
 #endif
   typedef int Index; //openblas uses int
   GeMatrix<ElementType, Index> A = GeMatrix<ElementType, Index>(MAX_SIZE, MAX_SIZE);
