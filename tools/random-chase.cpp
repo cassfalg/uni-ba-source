@@ -101,13 +101,14 @@ log2 (std::size_t val)
 int
 main ()
 {
+  double t=0;
   std::cout << "memsize[b]      [kb]   time in ns" << std::endl;
   for (std::size_t memsize = MIN_SIZE; memsize <= MAX_SIZE;
-      memsize += (1 << (std::max (GRANULARITY, log2 (memsize)) - GRANULARITY)))
+      memsize += (1 << (std::max (GRANULARITY, log2 (memsize/8)) - GRANULARITY)))
     {
       void** memory = create_random_chain (memsize);
       std::size_t count = std::max (memsize * 16, (std::size_t) 1 << 30);
-      double t = chase_pointers (memory, count);
+      t = chase_pointers (memory, count);
       delete[] memory;
       double ns = t * 1000000000 / count;
       std::cout << " " << std::setw (10) << memsize;

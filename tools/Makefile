@@ -1,7 +1,7 @@
 CPP = /usr/bin/g++
 CPPFLAGS += -Wall -Wextra -Wpedantic -std=c++11 -O3
 
-PERF_TARGETS = linear-chase fused-linear-chase random-chase
+PERF_TARGETS = random-chase linear-chase fused-linear-chase
 
 .PHONY: clean clean-perfdata runperf
 

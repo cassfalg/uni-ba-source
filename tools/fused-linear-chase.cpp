@@ -161,7 +161,7 @@ template<typename ... Pointers>
 #define MIN_SIZE (sizeof(void*))
 #endif
 #ifndef MAX_SIZE
-#define MAX_SIZE 120
+#define MAX_SIZE 300
 #endif
 
 int
