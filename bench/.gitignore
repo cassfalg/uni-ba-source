@@ -1,3 +1,4 @@
+/test-gemm-bliskernel
 /test-blocksizes
 /perf-openblas
 /perf-blis

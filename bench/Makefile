@@ -14,8 +14,11 @@ ATLAS_DIR=../../../hpc-libs/atlas
 ATLAS_IFLAGS= -I$(ATLAS_DIR)/include
 ATLAS_LFLAGS = $(ATLAS_DIR)/lib/libcblas.a $(ATLAS_DIR)/lib/libatlas.a
 
-PERF_TARGETS = test-blocksizes perf-blis perf-openblas perf-atlas
+PERF_TARGETS = test-blocksizes perf-blis perf-openblas perf-atlas test-gemm-bliskernel
 BLOCKSIZE_TARGETS = test-blocksizes
+
+test-gemm-bliskernel:
+	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) $(BLIS_IFLAGS) -fpermissive -o $@ perf-gemm-bliskernel.cpp
 
 test-blocksizes:
 	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) -o $@ test-blocksizes.cpp
