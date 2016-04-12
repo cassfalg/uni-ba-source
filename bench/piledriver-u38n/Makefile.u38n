@@ -1,0 +1,88 @@
+CXX = /usr/bin/g++
+CXXFLAGS += -Wall -Wextra -Wpedantic -std=c++11 -O3 -I../..
+
+OPENBLAS_DIR=../../../../hpc-libs/openblas
+OPENBLAS_IFLAGS = -I$(OPENBLAS_DIR)/include
+OPENBLAS_LFLAGS = $(OPENBLAS_DIR)/lib/libopenblas.a -fopenmp
+
+BLIS_DIR=../../../../hpc-libs/blis
+BLIS_IFLAGS= -I$(BLIS_DIR)/include
+BLIS_LFLAGS = $(BLIS_DIR)/lib/libblis.a -fopenmp
+
+ATLAS_DIR=../../../../hpc-libs/atlas
+ATLAS_IFLAGS= -I$(ATLAS_DIR)/include
+ATLAS_LFLAGS = $(ATLAS_DIR)/lib/libcblas.a $(ATLAS_DIR)/lib/libatlas.a
+
+PERF_TARGETS = test-blocksizes perf-blis perf-openblas perf-atlas
+BLOCKSIZE_TARGETS = test-blocksizes
+
+# This is needed for the perf-libs target to work with non-default Makefiles.
+# However, this solution may not work when calling make in subdirectories
+# or otherwise including different makefiles
+MAKEOPTS = -f $(lastword $(MAKEFILE_LIST))
+
+test-gemm-bliskernel:
+	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) $(BLIS_IFLAGS) -fpermissive -o $@ perf-gemm-bliskernel-u38n.cpp
+
+test-blocksizes:
+	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) -o $@ ../test-blocksizes.cpp
+
+perf-libs:
+	$(MAKE) $(MAKEOPTS) perf-blis
+	$(MAKE) $(MAKEOPTS) perf-openblas
+	$(MAKE) $(MAKEOPTS) perf-atlas
+
+perf-blis:
+	$(MAKE) $(MAKEOPTS) perf-blis-s
+	@./$@ | tee $@-s.$${HOSTNAME}.out
+	$(MAKE) $(MAKEOPTS) perf-blis-d
+	@./$@ | tee $@-d.$${HOSTNAME}.out
+
+perf-blis-s: ../perf-blis.cpp
+	$(CXX) $(CXXFLAGS) $(BLIS_IFLAGS) -DPRECISION=1 -o perf-blis ../perf-blis.cpp $(BLIS_LFLAGS)
+
+perf-blis-d: ../perf-blis.cpp
+	$(CXX) $(CXXFLAGS) $(BLIS_IFLAGS) -DPRECISION=2 -o perf-blis ../perf-blis.cpp $(BLIS_LFLAGS)
+
+perf-atlas:
+	$(MAKE) $(MAKEOPTS) perf-atlas-s
+	@./$@ | tee $@-s.$${HOSTNAME}.out
+	$(MAKE) $(MAKEOPTS) perf-atlas-d
+	@./$@ | tee $@-d.$${HOSTNAME}.out
+
+perf-atlas-s: ../perf-atlas.cpp
+	$(CXX) $(CXXFLAGS) $(ATLAS_IFLAGS) -DPRECISION=1 -o perf-atlas ../perf-atlas.cpp $(ATLAS_LFLAGS)
+
+perf-atlas-d: ../perf-atlas.cpp
+	$(CXX) $(CXXFLAGS) $(ATLAS_IFLAGS) -DPRECISION=2 -o perf-atlas ../perf-atlas.cpp $(ATLAS_LFLAGS)
+
+perf-openblas:
+	$(MAKE) $(MAKEOPTS) perf-openblas-s
+	@./$@ | tee $@-s.$${HOSTNAME}.out
+	$(MAKE) $(MAKEOPTS) perf-openblas-d
+	@./$@ | tee $@-d.$${HOSTNAME}.out
+
+perf-openblas-s: ../perf-openblas.cpp
+	$(CXX) $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=1 -o perf-openblas ../perf-openblas.cpp $(OPENBLAS_LFLAGS)
+
+perf-openblas-d: ../perf-openblas.cpp
+	$(CXX) $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=2 -o perf-openblas ../perf-openblas.cpp $(OPENBLAS_LFLAGS)
+
+.PHONY: clean clean-perfdata runperf header $(PERF_TARGETS) $(BLOCKSIZE_TARGETS) test-gemm-bliskernel
+
+all:
+
+header:
+	@for i in $(BLOCKSIZE_TARGETS); \
+	do echo "   MC    KC    NC    MR    NR     blocked GEMM: t    MFLOPS" | tee $$i.$${HOSTNAME}.out; \
+	done
+
+runperf: $(BLOCKSIZE_TARGETS)
+	@for i in $(BLOCKSIZE_TARGETS); do ./$$i | tee -a $$i.$${HOSTNAME}.out; done
+
+clean:
+	rm -f $(PERF_TARGETS)
+
+clean-perfdata:
+	rm -f $(BLOCKSIZE_TARGETS:%=%.*.out)
+

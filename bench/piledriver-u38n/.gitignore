@@ -1,0 +1,8 @@
+#performance and test result data
+/perf*.out
+/test*.out
+/perf-atlas
+/perf-blis
+/perf-openblas
+/test-blocksizes
+/test-gemm-bliskernel
