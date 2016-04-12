@@ -72,14 +72,14 @@ int
 main()
 {
     // Element type for A, B and C
-    typedef double                TA;
-    typedef double                TB;
-//    typedef std::complex<double> TC;
-    typedef double                TC;
+    typedef float                TA;
+    typedef float                TB;
+//    typedef std::complex<float> TC;
+    typedef float                TC;
 
     // Type for scalar factors
-    typedef double   Alpha;
-    typedef double   Beta;
+    typedef float   Alpha;
+    typedef float   Beta;
 
     // Max dimensions of A, B and C 
     const long max_m  = 1200;
@@ -120,8 +120,10 @@ main()
     WallTime<double> wallTime;
 
 
-    printf("%5d %5d %5d %5d %5d ", D_BLOCKSIZE_MC, D_BLOCKSIZE_KC,
-	   D_BLOCKSIZE_NC, D_BLOCKSIZE_MR, D_BLOCKSIZE_NR);
+//    printf("%5d %5d %5d %5d %5d ", D_BLOCKSIZE_MC, D_BLOCKSIZE_KC,
+//	   D_BLOCKSIZE_NC, D_BLOCKSIZE_MR, D_BLOCKSIZE_NR);
+    printf("%5d %5d %5d %5d %5d ", S_BLOCKSIZE_MC, S_BLOCKSIZE_KC,
+	   S_BLOCKSIZE_NC, S_BLOCKSIZE_MR, S_BLOCKSIZE_NR);
 
     wallTime.tic();
     hpc::myblas::gemm(max_m, max_n, max_k, alpha,
