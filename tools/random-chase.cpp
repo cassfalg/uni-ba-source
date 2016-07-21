@@ -102,7 +102,7 @@ int
 main ()
 {
   double t=0;
-  std::cout << "memsize[b]      [kb]   time in ns" << std::endl;
+  std::cout << "memsize[b]      [kb]     time in ns   speed in GiB/s" << std::endl;
   for (std::size_t memsize = MIN_SIZE; memsize <= MAX_SIZE;
       memsize += (1 << (std::max (GRANULARITY, log2 (memsize/8)) - GRANULARITY)))
     {
@@ -113,8 +113,13 @@ main ()
       double ns = t * 1000000000 / count;
       std::cout << " " << std::setw (10) << memsize;
       std::cout << " " << std::setw (8) << memsize / 1024;
-      std::cout << "  " << std::fixed << std::setw (10) << std::setprecision (5)
-	  << ns;
+      std::cout << "  " << std::fixed << std::setw (10) << std::setprecision (5)  << ns;
+
+	  double volume = (double) sizeof(void*) * count;
+	  double speed = (double) volume / t / (1<<30); /* in GiB/s */
+	  std::cout << "     " << std::setw(8) <<
+	  std::fixed << std::setprecision(5) << speed;
+
       std::cout << std::endl;
       std::cout.flush ();
     }

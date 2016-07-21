@@ -9,7 +9,7 @@ PERF_TARGETS = random-chase linear-chase fused-linear-chase
 ALL: runperf
 
 runperf: $(PERF_TARGETS)
-	for i in $(PERF_TARGETS); do ./$$i | tee $$i.$${HOSTNAME}.out; done
+	for i in $(PERF_TARGETS); do ./$$i | tee $$i.$${HOSTNAME}.txt; done
 
 clean:
 	rm -f $(PERF_TARGETS)

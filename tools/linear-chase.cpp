@@ -100,7 +100,6 @@ create_linear_chain (std::size_t size, std::size_t stride)
   gen_bit_reversal_permutation (offset, bits, runs);
 
   /* generate the actual pointer chain */
-  unsigned int run = 0;
   void** last = nullptr;
   for (unsigned int run = 0; run < runs; ++run)
     {
@@ -168,7 +167,7 @@ chase_pointers (void** memory, std::size_t count)
 int
 main ()
 {
-  std::cout << "   stride  time in ns" << std::endl;
+  std::cout << "   stride  time in ns   speed in GiB/s" << std::endl;
   for (std::size_t stride = MIN_SIZE; stride <= MAX_SIZE; stride +=
       sizeof(void*))
     {
@@ -180,8 +179,13 @@ main ()
       delete[] memory;
       double ns = t * 1000000000 / count;
       std::cout << " " << std::setw (8) << stride;
-      std::cout << "  " << std::setw (10) << std::fixed << std::setprecision (5)
-	  << ns;
+      std::cout << "  " << std::setw (10) << std::fixed << std::setprecision (5)  << ns;
+
+	  double volume = (double) sizeof(void*) * count;
+	  double speed = (double) volume / t / (1<<30); /* in GiB/s */
+	  std::cout << "  " << std::setw(8) <<
+	  std::fixed << std::setprecision(5) << speed;
+
       std::cout << std::endl;
       std::cout.flush ();
     }
