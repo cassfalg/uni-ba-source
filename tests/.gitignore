@@ -1,2 +1,7 @@
-/test-gemm
+/atlas_vs_myblas_refugemm
+/blis_vs_myblas_refmygemm
+/openblas_vs_myblas_refugemm
+/refblas_vs_myblas_refugemm
+
+/*.txt
 
