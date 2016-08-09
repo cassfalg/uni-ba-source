@@ -6,11 +6,11 @@
 // default
 //
 #ifndef DEFAULT_BLOCKSIZE_MR
-#define DEFAULT_BLOCKSIZE_MR 8
+#define DEFAULT_BLOCKSIZE_MR 4
 #endif
 
 #ifndef DEFAULT_BLOCKSIZE_NR
-#define DEFAULT_BLOCKSIZE_NR 8
+#define DEFAULT_BLOCKSIZE_NR 4
 #endif
 
 #ifndef DEFAULT_BLOCKSIZE_MC
@@ -29,23 +29,23 @@
 // single precision(float)
 //
 #ifndef S_BLOCKSIZE_MR
-#define S_BLOCKSIZE_MR 8
+#define S_BLOCKSIZE_MR 4
 #endif
 
 #ifndef S_BLOCKSIZE_NR
-#define S_BLOCKSIZE_NR 8
+#define S_BLOCKSIZE_NR 4
 #endif
 
 #ifndef S_BLOCKSIZE_MC
-#define S_BLOCKSIZE_MC 256
+#define S_BLOCKSIZE_MC 320
 #endif
 
 #ifndef S_BLOCKSIZE_KC
-#define S_BLOCKSIZE_KC 512
+#define S_BLOCKSIZE_KC 320
 #endif
 
 #ifndef S_BLOCKSIZE_NC
-#define S_BLOCKSIZE_NC 4096
+#define S_BLOCKSIZE_NC 5120
 #endif
 
 //
@@ -60,15 +60,15 @@
 #endif
 
 #ifndef D_BLOCKSIZE_MC
-#define D_BLOCKSIZE_MC 256
+#define D_BLOCKSIZE_MC 192
 #endif
 
 #ifndef D_BLOCKSIZE_KC
-#define D_BLOCKSIZE_KC 256
+#define D_BLOCKSIZE_KC 192
 #endif
 
 #ifndef D_BLOCKSIZE_NC
-#define D_BLOCKSIZE_NC 4096
+#define D_BLOCKSIZE_NC 3072
 #endif
 
 //

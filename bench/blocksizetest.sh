@@ -1,22 +1,30 @@
 #/bin/bash
 
+export PRECISION=1
 make header
-#for i in 1 2 3 4 5 6 7 8
-for i in 4 5 6 7 8 9
+for i in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
 do
-    export S_BLOCKSIZE_MR=$i
-#    for j in 1 2 3 4 5 6 7 8
-    for j in 4 5 6 7 8 9
+    for j in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
     do
-        export S_BLOCKSIZE_NR=$j
-#        for k in `seq 1 32` 40 48 56 64 72 80 88 96
-        for k in `seq 6 32` 40 48 56 64 72 80 88 96
+        for k in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
         do
-            export S_BLOCKSIZE_MC=$(($i*$k))
-            export S_BLOCKSIZE_KC=$(($j*$k))
-            export S_BLOCKSIZE_NC=$((64*$k))
-#            echo $S_BLOCKSIZE_MR $S_BLOCKSIZE_NR $S_BLOCKSIZE_MC $S_BLOCKSIZE_KC $S_BLOCKSIZE_NC
-            export BLOCKDEFS="-DS_BLOCKSIZE_MR=$i -DS_BLOCKSIZE_NR=$j -DS_BLOCKSIZE_MC=$(($i*$k)) -DS_BLOCKSIZE_KC=$(($j*$k)) -DS_BLOCKSIZE_NC=$((4*$i*$j*$k))"
+            export BLOCKDEFS="-DS_BLOCKSIZE_MR=4 -DS_BLOCKSIZE_NR=4 -DS_BLOCKSIZE_MC=$((4*$i)) -DS_BLOCKSIZE_KC=$((4*$j)) -DS_BLOCKSIZE_NC=$((32*$k)) -DPRECISION=1"
+            make runperf
+            export BLOCKDEFS="-DS_BLOCKSIZE_MR=6 -DS_BLOCKSIZE_NR=6 -DS_BLOCKSIZE_MC=$((6*$i)) -DS_BLOCKSIZE_KC=$((6*$j)) -DS_BLOCKSIZE_NC=$((32*$k)) -DPRECISION=1"
+            make runperf
+        done
+    done
+done
+
+export PRECISION=2
+make header
+for i in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
+do
+    for j in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
+    do
+        for k in `seq 2 2 16` `seq 20 4 128` `seq 136 8 512`
+        do
+            export BLOCKDEFS="-DD_BLOCKSIZE_MR=4 -DD_BLOCKSIZE_NR=4 -DD_BLOCKSIZE_MC=$((4*$i)) -DD_BLOCKSIZE_KC=$((4*$j)) -DD_BLOCKSIZE_NC=$((32*$k)) -DPRECISION=2"
             make runperf
         done
     done
