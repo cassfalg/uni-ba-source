@@ -2,6 +2,7 @@ CXX = /usr/bin/g++
 CXXFLAGS += -Wall -Wextra -Wpedantic -std=c++11 -O3 -I..
 
 OPENBLAS_DIR=../../../hpc-libs/openblas-git-armv8
+#OPENBLAS_DIR=../../../hpc-libs/openblas-git-cortexa57/
 OPENBLAS_IFLAGS = -I$(OPENBLAS_DIR)/include
 OPENBLAS_LFLAGS = $(OPENBLAS_DIR)/lib/libopenblas.a -fopenmp
 
@@ -20,7 +21,7 @@ all: tests
 MY_TARGETS = refblas_vs_myblas_refugemm
 
 TARGETS = $(MY_TARGETS) openblas_vs_myblas_refugemm \
-			blis_vs_myblas_refmygemm atlas_vs_myblas_refugemm
+			blis_vs_myblas_refugemm atlas_vs_myblas_refugemm
 
 atlas_vs_myblas_refugemm: atlas_vs_myblas_refugemm.cpp
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(ATLAS_IFLAGS) -o $@ $@.cpp $(ATLAS_LFLAGS)
@@ -28,7 +29,7 @@ atlas_vs_myblas_refugemm: atlas_vs_myblas_refugemm.cpp
 openblas_vs_myblas_refugemm: openblas_vs_myblas_refugemm.cpp
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(OPENBLAS_IFLAGS) -o $@ $@.cpp $(OPENBLAS_LFLAGS)
 
-blis_vs_myblas_refmygemm: blis_vs_myblas_refmygemm.cpp
+blis_vs_myblas_refugemm: blis_vs_myblas_refugemm.cpp
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(BLIS_IFLAGS) -o $@ $@.cpp $(BLIS_LFLAGS)
 
 $(MY_TARGETS): $(MY_TARGETS).cpp
