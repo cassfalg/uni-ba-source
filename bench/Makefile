@@ -21,7 +21,7 @@ test-gemm-bliskernel:
 	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) $(BLIS_IFLAGS) -fpermissive -o $@ perf-gemm-bliskernel.cpp
 
 test-blocksizes:
-	$(CXX) $(CXXFLAGS) $(BLOCKDEFS) -o $@ test-blocksizes.cpp
+	@$(CXX) $(CXXFLAGS) $(BLOCKDEFS) -o $@ test-blocksizes.cpp
 
 perf-libs:
 	$(MAKE) perf-blis
@@ -30,9 +30,9 @@ perf-libs:
 
 perf-blis:
 	$(MAKE) perf-blis-s
-	@./$@ | tee $@-s.$${HOSTNAME}.out
+	@./$@ | tee $@-s.$${HOSTNAME}.txt
 	$(MAKE) perf-blis-d
-	@./$@ | tee $@-d.$${HOSTNAME}.out
+	@./$@ | tee $@-d.$${HOSTNAME}.txt
 
 perf-blis-s: perf-blis.cpp
 	g++ $(CXXFLAGS) $(BLIS_IFLAGS) -DPRECISION=1 -o perf-blis perf-blis.cpp $(BLIS_LFLAGS)
@@ -42,9 +42,9 @@ perf-blis-d: perf-blis.cpp
 
 perf-atlas:
 	$(MAKE) perf-atlas-s
-	@./$@ | tee $@-s.$${HOSTNAME}.out
+	@./$@ | tee $@-s.$${HOSTNAME}.txt
 	$(MAKE) perf-atlas-d
-	@./$@ | tee $@-d.$${HOSTNAME}.out
+	@./$@ | tee $@-d.$${HOSTNAME}.txt
 
 perf-atlas-s: perf-atlas.cpp
 	g++ $(CXXFLAGS) $(ATLAS_IFLAGS) -DPRECISION=1 -o perf-atlas perf-atlas.cpp $(ATLAS_LFLAGS)
@@ -54,19 +54,21 @@ perf-atlas-d: perf-atlas.cpp
 
 perf-openblas:
 	$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-cortexa57 perf-openblas-s
-	@./$@ | tee $@-a57-s.$${HOSTNAME}.out
+	@./$@ | tee $@-a57-s.$${HOSTNAME}.txt
 	$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-cortexa57 perf-openblas-d
-	@./$@ | tee $@-a57-d.$${HOSTNAME}.out
+	@./$@ | tee $@-a57-d.$${HOSTNAME}.txt
 	$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-armv8 perf-openblas-s
-	@./$@ | tee $@-generic-s.$${HOSTNAME}.out
+	@./$@ | tee $@-generic-s.$${HOSTNAME}.txt
 	$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-armv8 perf-openblas-d
-	@./$@ | tee $@-generic-d.$${HOSTNAME}.out
+	@./$@ | tee $@-generic-d.$${HOSTNAME}.txt
 
 perf-openblas-s: perf-openblas.cpp
-	g++ $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=1 -o perf-openblas perf-openblas.cpp $(OPENBLAS_LFLAGS)
+	g++ $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=1 -o perf-openblas \
+		perf-openblas.cpp $(OPENBLAS_LFLAGS)
 
 perf-openblas-d: perf-openblas.cpp
-	g++ $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=2 -o perf-openblas perf-openblas.cpp $(OPENBLAS_LFLAGS)
+	g++ $(CXXFLAGS) $(OPENBLAS_IFLAGS) -DPRECISION=2 -o perf-openblas \
+	perf-openblas.cpp $(OPENBLAS_LFLAGS)
 
 .PHONY: clean clean-perfdata runperf header $(PERF_TARGETS) $(BLOCKSIZE_TARGETS)
 
@@ -74,15 +76,16 @@ all:
 
 header:
 	@for i in $(BLOCKSIZE_TARGETS); \
-	do echo "   MC    KC    NC    MR    NR     blocked GEMM: t    MFLOPS" | tee $$i.$${HOSTNAME}.out; \
+	do echo "Prec   MC    KC    NC    MR    NR          blocked GEMM: t    MFLOPS" \
+		| tee $$i.$${HOSTNAME}.$${PRECISION}.txt; \
 	done
 
 runperf: $(BLOCKSIZE_TARGETS)
-	@for i in $(BLOCKSIZE_TARGETS); do ./$$i | tee -a $$i.$${HOSTNAME}.out; done
+	@for i in $(BLOCKSIZE_TARGETS); do ./$$i | tee -a $$i.$${HOSTNAME}.$${PRECISION}.txt; done
 
 clean:
 	rm -f $(PERF_TARGETS)
 
 clean-perfdata:
-	rm -f $(BLOCKSIZE_TARGETS:%=%.*.out)
+	rm -f $(BLOCKSIZE_TARGETS:%=%.*.txt)
 
