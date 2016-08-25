@@ -37,7 +37,7 @@ main() {
 	#endif
 #endif
 
-    typedef size_t Index;
+    typedef long Index;
     typedef GeMatrix<ElementType, Index> MT;
 
     MT A(MAX_SIZE, MAX_SIZE, RowMajor);

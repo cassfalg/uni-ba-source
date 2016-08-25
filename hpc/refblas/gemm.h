@@ -27,6 +27,8 @@ gemm(Index m, Index n, Index k,
     if (alpha==Alpha(0) || k==0) {
         hpc::myblas::gescal(m, n, beta, C, incRowC, incColC);
         return;
+    } else {
+        hpc::myblas::gescal(m, n, beta, C, incRowC, incColC);
     }
 
     for (Index i=0; i<m; ++i) {
