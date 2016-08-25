@@ -14,10 +14,15 @@ my_dgemm_simple_4x4_cm:
 
 	/*
 	Preliminaries:
+	push registers v8 to v15 (callee saved)
 	save alpha and beta
 	define register aliases for a, b and C_
 	zero C_
 	*/
+	stp d8, d9, [sp, #-16]! // push registers to stack
+	stp d10, d11, [sp, #-16]!
+	stp d12, d13, [sp, #-16]!
+	stp d14, d15, [sp, #-16]!
 	ins v0.d[1], v0.d[0] // copy alpha to the higher lane of v0
 	ins v0.d[0], v1.d[0] // copy beta to the lower lane of v0
 	alpha_beta .req v0 // alpha in higher lane, beta in lower lane
@@ -54,10 +59,10 @@ my_dgemm_simple_4x4_cm:
 	calculate the dyadic product
 	*/
 	k_iter .req x6
-	add k_iter, x0, #1
+	add k_iter, x0, #0
 	Ap .req x7
 	mov Ap, x1
-	Bp .req x8
+	Bp .req x9
 	mov Bp, x2
 accumulate:
 	sub k_iter, k_iter, #1
@@ -91,17 +96,17 @@ accumulate:
 	c2_3 .req v21
 	c1_4 .req v22
 	c2_4 .req v23
-	incRowCb .req x13
+	incRowCb .req x10
 	lsl incRowCb, x4, #3 // incRowC * sizeof(double) (we need it in bytes)
-	incColCb .req x14
+	incColCb .req x11
 	lsl incColCb, x5, #3 // incColC * sizeof(double)
-	Cp1 .req x9 // pointer on column of C
+	Cp1 .req x12 // pointer on column of C
 	add Cp1, Cp, xzr // adress column1
-	Cp2 .req x10
+	Cp2 .req x13
 	add Cp2, Cp1, incColCb // adress column2
-	Cp3 .req x11
+	Cp3 .req x14
 	add Cp3, Cp2, incColCb // adress column3
-	Cp4 .req x12
+	Cp4 .req x15
 	add Cp4, Cp3, incColCb // adress column4
 
 	/*
@@ -173,6 +178,11 @@ add_alpha_times_C_:
 	st1 {c1_4.d}[1], [cp4], incRowCb
 	st1 {c2_4.d}[0], [cp4], incRowCb
 	st1 {c2_4.d}[1], [cp4], incRowCb
+
+	ldp d14, d15, [sp], #16 // pop registers from stack
+	ldp d12, d13, [sp], #16
+	ldp d10, d11, [sp], #16
+	ldp d8, d9, [sp], #16
 
 	ret
 
