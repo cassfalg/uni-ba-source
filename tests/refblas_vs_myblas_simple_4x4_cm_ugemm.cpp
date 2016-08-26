@@ -51,6 +51,10 @@ main() {
     ElementType alpha(1.5);
     ElementType beta(2.5);
 
+    ElementType aNorm = hpc::matvec::asum(A);
+    ElementType bNorm = hpc::matvec::asum(B);
+    ElementType cNorm = hpc::matvec::asum(C1);
+
     hpc::myblas::gecopy<Index, ElementType, ElementType>(MAX_SIZE, MAX_SIZE,
                          C1.data, C1.incRow, C1.incCol,
                          C2.data, C2.incRow, C2.incCol);
@@ -61,7 +65,7 @@ main() {
 #if PRECISION == 1
     printf("%20s %9s %9s", "not implemented SGEMM: t", "MFLOPS", "diff\n");
 #elif PRECISION == 2
-    printf("%20s %9s %9s", "simple4x4cm DGEMM: t", "MFLOPS", "diff\n");
+    printf("%20s %9s %9s %9s\n", "simple4x4cm DGEMM: t", "MFLOPS", "1-diff", "sup-diff");
 #endif
 
 
@@ -86,14 +90,11 @@ main() {
                       beta,
                       C2.data, C2.incRow, C2.incCol);
         t = wallTime.toc();
-        double res = hpc::matvec::residuum_gemm(i, i, i, alpha,
-                              A.data, A.incRow, A.incCol,
-                              B.data, B.incRow, B.incCol,
-                              beta,
-                              C1.data, C1.incRow, C1.incCol,
-                              C2.data, C2.incRow, C2.incCol);
-
-        printf("%20.4lf %9.2lf %9.1e", t, 2.*i/1000*i/1000*i/t, res);
+        double res_1 = hpc::matvec::residuum_gemm(A.numCols
+        				, alpha, aNorm, bNorm, beta, cNorm
+        				, C1, C2);
+        double res_sup = hpc::matvec::max_rel_diff(C1, C2);
+        printf("%20.4lf %9.2lf %9.1e %9.1e", t, 2.*i/1000*i/1000*i/t, res_1, res_sup);
         printf("\n");
     }
 }
