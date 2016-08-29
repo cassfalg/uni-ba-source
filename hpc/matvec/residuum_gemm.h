@@ -87,32 +87,52 @@ asup(const MA &A) {
 	return max;
 }
 
-  //
-  //  Compute residual for matrix-product with 1-Norm
-  //
+
+//
+//  Compute residual for matrix-product with 1-Norm, use C1 for cNorm
+//
 template <typename MA>
 typename MA::ElementType
-residuum_gemm(typename MA::Index n, typename MA::ElementType alpha
-		, typename MA::ElementType aNorm, typename MA::ElementType bNorm
+residuum_gemm(typename MA::ElementType alpha
+		, const MA &A, const MA &B
 		, typename MA::ElementType beta
-		, typename MA::ElementType cNorm, MA &C1, MA &C2)
+		, MA &C1, MA &C2)
 {
 	typedef typename MA::Index Index;
 	typedef typename MA::ElementType ElementType;
-	Index maxDim = std::max(std::max(C1.numRows, n), C1.numCols);
+	Index maxDim = std::max(std::max(C1.numRows, C1.numCols), A.numCols);
+	ElementType aNorm = asum(A) * std::abs(alpha);
+	ElementType bNorm = asum(B);
+	ElementType cNorm = asum(C1)*std::max(ElementType(1),std::abs(beta));
 	ElementType aDiff = asumDiff(C1, C2);
-      // Using eps for double gives upper bound in case elements have lower
-      // precision.
 	ElementType eps = std::numeric_limits<ElementType>::epsilon();
-	ElementType res = aDiff/(aNorm*std::abs(alpha)
-						*bNorm
-						*cNorm*std::max(ElementType(1),std::abs(beta))
-						*eps*maxDim);
+	ElementType res = aDiff/(aNorm*std::abs(alpha)*bNorm*cNorm*eps*maxDim);
+	return res;
+}
+//
+//  Compute residual for matrix-product with 1-Norm, use original C for cNorm
+//
+template <typename MA>
+typename MA::ElementType
+residuum_gemm_alt(typename MA::ElementType alpha
+		, const MA &A, const MA &B
+		, typename MA::ElementType beta
+		, const MA &C, MA &C1, MA &C2)
+{
+	typedef typename MA::Index Index;
+	typedef typename MA::ElementType ElementType;
+	Index maxDim = std::max(std::max(C1.numRows, C1.numCols), A.numCols);
+	ElementType aNorm = asum(A) * std::abs(alpha);
+	ElementType bNorm = asum(B);
+	ElementType cNorm = asum(C) * std::max(ElementType(1),std::abs(beta));
+	ElementType aDiff = asumDiff(C1, C2);
+	ElementType eps = std::numeric_limits<ElementType>::epsilon();
+	ElementType res = aDiff/(aNorm*std::abs(alpha)*bNorm*cNorm*eps*maxDim);
 	return res;
 }
 
   //
-  //  Compute residual for matrix-product with sup norm
+  //  Compute maximum relative error
   // GEMM: C = beta * C + alpha * A * B
 template <typename MA>
 typename MA::ElementType

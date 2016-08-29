@@ -1,7 +1,7 @@
 .arch armv8-a
-.global my_dgemm_simple_4x4_cm
-.type my_dgemm_simple_4x4_cm %function
-my_dgemm_simple_4x4_cm:
+.global my_dgemm_simple_4x4_rm
+.type my_dgemm_simple_4x4_rm %function
+my_dgemm_simple_4x4_rm:
 	//Param# Register Datatype Name
 	// 1     X0       long     k
 	// 2     D0       double   alpha
