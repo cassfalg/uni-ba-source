@@ -106,7 +106,7 @@ residuum_gemm(typename MA::ElementType alpha
 	ElementType cNorm = asum(C1)*std::max(ElementType(1),std::abs(beta));
 	ElementType aDiff = asumDiff(C1, C2);
 	ElementType eps = std::numeric_limits<ElementType>::epsilon();
-	ElementType res = aDiff/(aNorm*std::abs(alpha)*bNorm*cNorm*eps*maxDim);
+	ElementType res = aDiff/(aNorm*bNorm*cNorm*eps*maxDim);
 	return res;
 }
 //
@@ -127,7 +127,7 @@ residuum_gemm_alt(typename MA::ElementType alpha
 	ElementType cNorm = asum(C) * std::max(ElementType(1),std::abs(beta));
 	ElementType aDiff = asumDiff(C1, C2);
 	ElementType eps = std::numeric_limits<ElementType>::epsilon();
-	ElementType res = aDiff/(aNorm*std::abs(alpha)*bNorm*cNorm*eps*maxDim);
+	ElementType res = aDiff/(aNorm*bNorm*cNorm*eps*maxDim);
 	return res;
 }
 
@@ -141,7 +141,7 @@ max_rel_diff(const MA &A, const MA &B)
 
 	typedef typename MA::Index Index;
 	typedef typename MA::ElementType ElementType;
-	ElementType size(0);
+	ElementType mean(0);
 	ElementType diff(0);
 	ElementType max(0);
 	ElementType cur(0);
@@ -149,12 +149,13 @@ max_rel_diff(const MA &A, const MA &B)
 	for (Index i=0; i<A.numRows; ++i) {
 		for (Index j=0; j<A.numCols; ++j) {
 			diff = std::abs(A(i, j) - B(i, j));
-			size = std::abs(A(i, j) + B(i, j))/2;
-			cur = (size > tresh)?diff/size:diff;
+			mean = std::abs(A(i, j) + B(i, j))/2;
+			cur = (mean > tresh)?diff/mean:diff;
 			max = (cur > max)?cur:max;
 		}
 	}
-	return max;}
+	return max;
+}
 
 } } // namespace matvec, hpc
 
