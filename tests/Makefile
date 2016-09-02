@@ -71,6 +71,13 @@ refblas_vs_myblas_simple_4x4_rm_ugemm: refblas_vs_myblas_simple_4x4_rm_ugemm.cpp
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) my_dgemm_simple_4x4_rm.o -o $@ $@.cpp
 #	@./$@ | tee $@.$${HOSTNAME}.$(PRECISION).txt
 
+refblas_vs_myblas_mark2a: refblas_vs_myblas_mark2a.cpp \
+				../hpc/myblas/kernels/my_dgemm_mark2a.s \
+				../hpc/myblas/kernels/my_dgemm_mark2a.h
+	@as -o my_dgemm_mark2a.o ../hpc/myblas/kernels/my_dgemm_mark2a.s
+	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) my_dgemm_mark2a.o -o $@ $@.cpp
+#	@./$@ | tee $@.$${HOSTNAME}.$(PRECISION).txt
+
 compile: $(TARGETS)
 
 tests: $(TARGETS)

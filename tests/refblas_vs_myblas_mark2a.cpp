@@ -6,7 +6,7 @@
 #include <hpc/matvec/gematrix.h>
 #include <hpc/matvec/random_init.h>
 #include <hpc/util/walltime.h>
-#include <hpc/myblas/kernels/my_dgemm_simple_4x4_cm.h>
+#include <hpc/myblas/kernels/my_dgemm_mark2a.h>
 #include <hpc/myblas/gemm_no_ugemm.h>
 
 //    1: single precision
@@ -76,7 +76,7 @@ main() {
     printf("%20s %9s %9s %9s %9s\n", "not implemented SGEMM: t", "MFLOPS"
     		, "residuum", "res_alt", "sup-diff");
 #elif PRECISION == 2
-    printf("%20s %9s %9s %9s %9s\n", "simple4x4cm DGEMM: t", "MFLOPS"
+    printf("%20s %9s %9s %9s %9s\n", "mark2a DGEMM: t", "MFLOPS"
     		, "residuum", "res_alt", "sup-diff");
 #endif
 

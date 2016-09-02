@@ -48,10 +48,8 @@ Index granularity(Index i) {
 			return 7;
 		} else if (i < 2000) {
 			return 41;
-		} else if (i < 4000) {
-			return 211;
 		} else {
-			return 503;
+			return 211;
 		}
 	}
 }
