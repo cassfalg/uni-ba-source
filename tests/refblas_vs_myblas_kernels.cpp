@@ -6,7 +6,7 @@
 #include <hpc/matvec/gematrix.h>
 #include <hpc/matvec/random_init.h>
 #include <hpc/util/walltime.h>
-#include <hpc/myblas/kernels/my_dgemm_mark2a.h>
+#include <hpc/myblas/kernels/my_dgemm_4x8ugemm.h>
 #include <hpc/myblas/gemm_no_ugemm.h>
 
 //    1: single precision

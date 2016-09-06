@@ -1,7 +1,7 @@
 .arch armv8-a
-.global my_dgemm_mark2a
-.type my_dgemm_mark2a %function
-my_dgemm_mark2a:
+.global my_dgemm_4x8ugemm
+.type my_dgemm_4x8ugemm %function
+my_dgemm_4x8ugemm:
 	//Param# Register Datatype Name
 	// 1     X0       long     k
 	// 2     D0       double   alpha

@@ -27,9 +27,11 @@ TARGETS = $(MY_TARGETS) \
 			refblas_vs_myblas_simple_4x4_cm_ugemm \
 			refblas_vs_myblas_simple_4x4_rm_ugemm
 
+KERNELS = mark2a mark2b
+
 all: tests
 
-.PHONY: $(TARGETS) clean tests all compile manual_tests
+.PHONY: $(TARGETS) clean tests all compile manual_tests compile_kernels
 
 atlas_vs_myblas_refugemm:
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(ATLAS_IFLAGS) -o $@ $@.cpp $(ATLAS_LFLAGS)
@@ -71,12 +73,25 @@ refblas_vs_myblas_simple_4x4_rm_ugemm: refblas_vs_myblas_simple_4x4_rm_ugemm.cpp
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) my_dgemm_simple_4x4_rm.o -o $@ $@.cpp
 #	@./$@ | tee $@.$${HOSTNAME}.$(PRECISION).txt
 
-refblas_vs_myblas_mark2a: refblas_vs_myblas_mark2a.cpp \
-				../hpc/myblas/kernels/my_dgemm_mark2a.s \
-				../hpc/myblas/kernels/my_dgemm_mark2a.h
-	@as -o my_dgemm_mark2a.o ../hpc/myblas/kernels/my_dgemm_mark2a.s
-	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) my_dgemm_mark2a.o -o $@ $@.cpp
+#refblas_vs_myblas_mark2a: refblas_vs_myblas_mark2a.cpp \
+#				../hpc/myblas/kernels/my_dgemm_mark2a.s \
+#				../hpc/myblas/kernels/my_dgemm_mark2a.h
+#	@as -o my_dgemm_mark2a.o ../hpc/myblas/kernels/my_dgemm_mark2a.s
+#	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) my_dgemm_mark2a.o -o $@ $@.cpp
 #	@./$@ | tee $@.$${HOSTNAME}.$(PRECISION).txt
+
+%.o : %.s #cancel default rule
+
+mark%.o: ../hpc/myblas/kernels/mark%.s
+	as -o $@ $<
+
+
+refblas_vs_myblas_mark%: mark%.o
+	$(CXX) $(CXXFLAGS) $(PP_FLAGS) $< -o $@ refblas_vs_myblas_kernels.cpp
+
+test_kernels: refblas_vs_myblas_$(KERNELS)
+	for i in $(KERNELS); do ./refblas_vs_myblas_$$i \
+		| tee -a refblas_vs_myblas_$$i.$${HOSTNAME}.$(PRECISION).txt; done
 
 compile: $(TARGETS)
 
@@ -89,5 +104,9 @@ manual_tests:
 	./$@
 
 clean:
-	rm -f $(TARGETS) *.txt *.o
+	rm -f $(TARGETS) refblas_vs_myblas_$(KERNELS) *.o
+
+allclean: clean
+	rm -f *.txt
+
 
