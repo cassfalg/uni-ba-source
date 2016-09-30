@@ -25,5 +25,6 @@ main() {
     double t = wallTime.toc();
     // Instructions per cycle: 2 Ghz equals 2 000 000 000 cycles per second
     // function does 30 (+ sub + branch) instructions per iteration
-    printf("%20s %10ld %10.2lf %10.5lf\n", "fmla Vt, Vt, Vt", count, t, count/2.0/1000000000.0*18/t);
+    printf("%20s %10ld %10.2lf %10.5lf\n", "fmla Vt, Vt, Vt"
+    		, count, t, count/2.0/1000000000.0*18/t);
 }

@@ -1,11 +1,13 @@
 /atlas_vs_myblas_refugemm
 /blis_vs_myblas_refugemm
-/openblas_vs_myblas_refugemm
+/openblas_armv8_vs_myblas_refugemm
+/openblas_cortexa57_vs_myblas_refugemm
 /refblas_vs_myblas_refugemm
 /refblas_vs_myblas_simple_4x4_cm_ugemm
 /refblas_vs_myblas_simple_4x4_rm_ugemm
 /refblas_vs_myblas_mark2a
 /refblas_vs_myblas_mark2b
+/testit
 
 /*.txt
 /*.o

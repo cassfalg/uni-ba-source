@@ -18,8 +18,9 @@ ATLAS_LFLAGS = $(ATLAS_DIR)/lib/libcblas.a $(ATLAS_DIR)/lib/libatlas.a
 
 MY_TARGETS = refblas_vs_myblas_refugemm
 
+#			openblas_vs_myblas_refugemm \
+
 TARGETS = $(MY_TARGETS) \
-			openblas_vs_myblas_refugemm \
 			openblas_armv8_vs_myblas_refugemm \
 			openblas_cortexa57_vs_myblas_refugemm \
 			blis_vs_myblas_refugemm \
@@ -27,11 +28,11 @@ TARGETS = $(MY_TARGETS) \
 			refblas_vs_myblas_simple_4x4_cm_ugemm \
 			refblas_vs_myblas_simple_4x4_rm_ugemm
 
-KERNELS = mark2a mark2b
+KERNELS = mark2a mark2b mark2c
 
 all: tests
 
-.PHONY: $(TARGETS) clean tests all compile manual_tests compile_kernels
+.PHONY: $(TARGETS) clean tests all compile manual_tests compile_kernels openblas_vs_myblas_refugemm
 
 atlas_vs_myblas_refugemm:
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(ATLAS_IFLAGS) -o $@ $@.cpp $(ATLAS_LFLAGS)
@@ -43,13 +44,15 @@ openblas_vs_myblas_refugemm:
 
 openblas_armv8_vs_myblas_refugemm:
 	@$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-armv8 openblas_vs_myblas_refugemm
-	@./openblas_vs_myblas_refugemm \
-			| tee -a openblas_armv8_vs_myblas_refugemm.$${HOSTNAME}.$(PRECISION).txt
+	mv openblas_vs_myblas_refugemm openblas_armv8_vs_myblas_refugemm
+#	@./openblas_vs_myblas_refugemm \
+#			| tee -a openblas_armv8_vs_myblas_refugemm.$${HOSTNAME}.$(PRECISION).txt
 
 openblas_cortexa57_vs_myblas_refugemm:
 	@$(MAKE) -e OPENBLAS_DIR=../../../hpc-libs/openblas-git-cortexa57 openblas_vs_myblas_refugemm
-	@./openblas_vs_myblas_refugemm \
-			| tee -a openblas_cortexa57_vs_myblas_refugemm.$${HOSTNAME}.$(PRECISION).txt
+	mv openblas_vs_myblas_refugemm openblas_cortexa57_vs_myblas_refugemm
+#	@./openblas_vs_myblas_refugemm \
+#			| tee -a openblas_cortexa57_vs_myblas_refugemm.$${HOSTNAME}.$(PRECISION).txt
 
 blis_vs_myblas_refugemm:
 	@$(CXX) $(CXXFLAGS) $(PP_FLAGS) $(BLIS_IFLAGS) -o $@ $@.cpp $(BLIS_LFLAGS)
